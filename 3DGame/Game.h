@@ -8,6 +8,9 @@
 #include <Voxels/InputHandler.h>
 #include <Voxels/FramerateController.h>
 #include <Voxels/Chunk.h>
+#include <Voxels/Light.h>
+#include <Voxels/ResourceManager.h>
+#include <Voxels/Texture.h>
 
 class Game {
 public:

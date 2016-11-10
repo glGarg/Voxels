@@ -12,6 +12,8 @@ using std::string;
 using std::ifstream;
 using std::vector;
 
+//#define DEBUG_GLSL
+
 namespace Voxels {
 	class Shader
 	{

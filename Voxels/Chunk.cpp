@@ -1,7 +1,7 @@
 #include "Chunk.h"
 
 namespace Voxels {
-	const int Chunk::CHUNK_SIZE = 10;
+	const int Chunk::CHUNK_SIZE = 16;
 
 	Chunk::Chunk() : position(0.), renderer(new Renderer) {
 		allocBlocks();
@@ -33,13 +33,13 @@ namespace Voxels {
 
 	void Chunk::update() {
 		renderer->clear();
-		for (int i = 0; i < CHUNK_SIZE; ++i) {
-			for (int j = 0; j < CHUNK_SIZE; ++j) {
-				for (int k = 0; k < CHUNK_SIZE; ++k) {
-					if (!blocks[i][j][k].isActive()) {
+		for (int i = 0; i > -CHUNK_SIZE; --i) {
+			for (int j = 0; j > -CHUNK_SIZE; --j) {
+				for (int k = 0; k > -CHUNK_SIZE; --k) {
+					if (!blocks[-i][-j][-k].isActive()) {
 						continue;
 					}
-					createCube(position + glm::vec3(-i, -j, -k));
+					createCube(position + Chunk::CHUNK_SIZE*.5f + glm::vec3(i, j, k));
 				}
 			}
 		}
@@ -98,10 +98,9 @@ namespace Voxels {
 			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f)
 		};
 		for (int i = 0; i < sizeof(vertexData) / sizeof(glm::vec3); i+=3) {
-			vertexData[i] = Block::BLOCK_SIZE*vertexData[i] + pos;
-			vertexData[i+1] = Block::BLOCK_SIZE*vertexData[i+1] + pos;
-			vertexData[i+2] = Block::BLOCK_SIZE*vertexData[i+2] + pos;
-			renderer->addTriangle(vertexData[i], vertexData[i + 1], vertexData[i + 2]);
+			renderer->addTriangle(Block::BLOCK_SIZE*(vertexData[i]) + pos,
+								  Block::BLOCK_SIZE*(vertexData[i + 1]) + pos,
+								  Block::BLOCK_SIZE*(vertexData[i + 2]) + pos);
 		}
 	}
 }

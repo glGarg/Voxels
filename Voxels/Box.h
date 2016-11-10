@@ -6,11 +6,12 @@ namespace Voxels {
 	class Box {
 	public:
 		Box();
-		Box(glm::vec3 pos);
+		Box(glm::vec3 pos, float scale);
 		~Box();
 		void init();
-		void draw();
+		void render();
 	private:
+		float scale;
 		GLuint vbo[2];
 		glm::vec3 position;
 	};

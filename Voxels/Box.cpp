@@ -1,9 +1,9 @@
 #include "Box.h"
 
 namespace Voxels {
-	Box::Box() : vbo{0, 0} {}
+	Box::Box() : vbo{0, 0}, scale(1.) {}
 
-	Box::Box(glm::vec3 pos) : vbo{ 0, 0 }, position(pos) {}
+	Box::Box(glm::vec3 pos, float scale) : vbo{ 0, 0 }, scale(scale), position(pos) {}
 	
 	Box::~Box() {}
 
@@ -25,7 +25,7 @@ namespace Voxels {
 			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f)
 		};
 		for (int i = 0; i < sizeof(vertexData)/sizeof(glm::vec3); ++i) {
-			vertexData[i] += position;
+			vertexData[i] = scale*vertexData[i] + position;
 		}
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -33,7 +33,7 @@ namespace Voxels {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void Box::draw() {
+	void Box::render() {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);

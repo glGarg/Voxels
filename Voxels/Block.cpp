@@ -1,7 +1,7 @@
 #include "Block.h"
 
 namespace Voxels {
-	float Block::BLOCK_SIZE = 0.3;
+	float Block::BLOCK_SIZE = 0.45;
 
 	Block::Block() : active(true) {}
 

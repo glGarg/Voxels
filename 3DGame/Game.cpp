@@ -6,7 +6,7 @@ Game::Game(int width, int height) : width(width), height(height),
 									window(width, height, "Test"),
 									vertex("./assets/Vertex.glsl", GL_VERTEX_SHADER),
 									fragment("./assets/Fragment.glsl", GL_FRAGMENT_SHADER),
-									camera(glm::vec3(15, 15, 15), glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(15, 15, 15)), glm::radians(25.f), 0.1, 1000, width, height),
+									camera(glm::vec3(20, 20, 20), glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(20, 20, 20)), glm::radians(25.f), 0.1, 1000, width, height),
 									framerateController(30)
 {
 	program.attach(vertex);
@@ -25,7 +25,7 @@ Game::~Game() {}
 
 void Game::run()
 {
-	vector<Voxels::Box> boxes;
+	/*vector<Voxels::Box> boxes;
 	vector<glm::vec3> positions;
 	for (float i = 0; i > -10; i-=2.3) {
 		for (float j = 0; j > -10; j-=2.3) {
@@ -37,14 +37,21 @@ void Game::run()
 	for (int i = 0; i < positions.size(); ++i) {
 		boxes.emplace_back(positions[i]);
 		boxes[i].init();
-	}
-
-	Voxels::Chunk chunk;
+	}*/
+	Voxels::Light light(glm::vec3(0., 15., 0));
+	
+	//Voxels::Box box(glm::vec3(0, 15, 0), 0.3);
+	Voxels::Chunk chunk(glm::vec3(0., 0., 0.));
+	
+	//box.init();
 	chunk.init();
 	
 	camera.init();
+
+	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/Wood.jpg")->texture);
 	glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
-	
+	glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
+
 	while (!window) {
 		framerateController.begin();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -52,16 +59,18 @@ void Game::run()
 		program.use();
 		processInput();
 		if (camera.getCameraUpdated()) {
+			light.setPosition(camera.getPosition());
 			glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
 			camera.setCameraUpdated();
 		}
 
-		for (int i = boxes.size(); i > 0; --i) {
-			//boxes[i-1].draw();
-		}
+		/*for (int i = boxes.size(); i > 0; --i) {
+			boxes[i-1].draw();
+		}*/
 
 		chunk.render();
-		
+		//box.render();
+
 		program.disable();
 		
 		window.pollEvents();

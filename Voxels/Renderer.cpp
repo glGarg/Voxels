@@ -36,10 +36,7 @@ namespace Voxels {
 
 	void Renderer::render() {
 		glBindVertexArray(vao);
-		for (int i = 36000 - 36; i >= 0; i -= 36) {
-			glDrawArrays(GL_TRIANGLES, i, 36);
-		}
-		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glBindVertexArray(0);
 	}
 }
