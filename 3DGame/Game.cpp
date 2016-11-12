@@ -4,13 +4,23 @@
 
 Game::Game(int width, int height) : width(width), height(height),
 									window(width, height, "Test"),
-									vertex("./assets/Vertex.glsl", GL_VERTEX_SHADER),
-									fragment("./assets/Fragment.glsl", GL_FRAGMENT_SHADER),
-									camera(glm::vec3(20, 20, 20), glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(20, 20, 20)), glm::radians(25.f), 0.1, 1000, width, height),
-									framerateController(30)
+									programVertex("./assets/Vertex.glsl", GL_VERTEX_SHADER),
+									programFragment("./assets/Fragment.glsl", GL_FRAGMENT_SHADER),
+									depthProgramVertex("./assets/depthVertex.glsl", GL_VERTEX_SHADER),
+									depthProgramFragment("./assets/depthFragment.glsl", GL_FRAGMENT_SHADER),
+									camera(glm::vec3(120, 120, 120),
+									glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(120, 120, 120)),
+									glm::radians(25.f), .1, 1000, width, height), framerateController(30), map(4),
+									depthTexture(Voxels::TextureLoader::getTextureCount(), width, height),
+									depthFrameBuffer()
 {
-	program.attach(vertex);
-	program.attach(fragment);
+	depthProgram.attach(depthProgramVertex);
+	depthProgram.attach(depthProgramFragment);
+	depthProgram.link();
+	depthProgram.use();
+
+	program.attach(programVertex);
+	program.attach(programFragment);
 	program.link();
 	program.use();
 
@@ -23,54 +33,58 @@ Game::Game(int width, int height) : width(width), height(height),
 
 Game::~Game() {}
 
-void Game::run()
-{
-	/*vector<Voxels::Box> boxes;
-	vector<glm::vec3> positions;
-	for (float i = 0; i > -10; i-=2.3) {
-		for (float j = 0; j > -10; j-=2.3) {
-			for (float k = 0; k > -10; k-=2.3) {
-				positions.emplace_back(i, j, k);
-			}
-		}
-	}
-	for (int i = 0; i < positions.size(); ++i) {
-		boxes.emplace_back(positions[i]);
-		boxes[i].init();
-	}*/
-	Voxels::Light light(glm::vec3(0., 15., 0));
-	
-	//Voxels::Box box(glm::vec3(0, 15, 0), 0.3);
-	Voxels::Chunk chunk(glm::vec3(0., 0., 0.));
-	
-	//box.init();
-	chunk.init();
-	
+void Game::run() {
+	Voxels::Light light(camera.getPosition());
+	map.init();
 	camera.init();
 
-	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/Wood.jpg")->texture);
+	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/Grass.jpg")->texture);
+	glUniform1i(program.getUniformLocation("depth"), 0);
 	glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
 	glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
 
+	depthFrameBuffer.init();
+
+	depthTexture.init();
+	depthTexture.bind();
+	depthTexture.setSource(0, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	depthFrameBuffer.bind();
+	depthFrameBuffer.attachTexture(GL_DEPTH_ATTACHMENT, depthTexture.id, 0);
+	depthFrameBuffer.drawBuffer(GL_NONE);
+	if (GL_FRAMEBUFFER_COMPLETE != glCheckFramebufferStatus(GL_FRAMEBUFFER)) {
+		cout << "Error incomplete framebuffer" << endl;
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	depthFrameBuffer.unbind();
+
 	while (!window) {
 		framerateController.begin();
+
+		depthProgram.use();
+		//for now using camera's matrix rather than light
+		glUniformMatrix4fv(depthProgram.getUniformLocation("lightVP"), 1, GL_FALSE, camera.getMVPPtr());
+		glViewport(0, 0, width, height);
+		depthFrameBuffer.bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		map.render();
+		depthFrameBuffer.unbind();
+		depthProgram.disable();
+
+		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		program.use();
 		processInput();
 		if (camera.getCameraUpdated()) {
 			light.setPosition(camera.getPosition());
+			light.setDirection(camera.getDirection());
+			glUniformMatrix4fv(program.getUniformLocation("lightVP"), 1, GL_FALSE, camera.getMVPPtr());
+			glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
 			glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
 			camera.setCameraUpdated();
 		}
-
-		/*for (int i = boxes.size(); i > 0; --i) {
-			boxes[i-1].draw();
-		}*/
-
-		chunk.render();
-		//box.render();
-
+		depthTexture.bind();
+		map.render();
 		program.disable();
 		
 		window.pollEvents();
@@ -96,14 +110,20 @@ void Game::cursorInputFunc(GLFWwindow *window, double x, double y) {
 void Game::processInput() {
 	if (inputHandler.cursorMoved()) {
 		glm::vec2 offset(inputHandler.getXOffset(), inputHandler.getYOffset());
-		//camera.setYaw(camera.getYaw() - offset.x*.001f);
-		//camera.setPitch(camera.getPitch() - offset.y*.001f);
+		camera.setYaw(camera.getYaw() - offset.x*.006f);
+		camera.setPitch(camera.getPitch() - offset.y*.002f);
 	}
-	if (inputHandler.isPressed(GLFW_KEY_RIGHT)) {
+	if (inputHandler.isPressed(GLFW_KEY_D)) {
 		camera.setPosition(camera.getPosition() + camera.getRight() *.2f);
 	}
-	if (inputHandler.isPressed(GLFW_KEY_LEFT)) {
+	if (inputHandler.isPressed(GLFW_KEY_A)) {
 		camera.setPosition(camera.getPosition() - camera.getRight() *.2f);
+	}
+	if (inputHandler.isPressed(GLFW_KEY_W)) {
+		camera.setPosition(camera.getPosition() + camera.getUp() *.2f);
+	}
+	if (inputHandler.isPressed(GLFW_KEY_S)) {
+		camera.setPosition(camera.getPosition() - camera.getUp() *.2f);
 	}
 	if (inputHandler.isPressed(GLFW_KEY_UP)) {
 		camera.setPosition(camera.getPosition() + camera.getDirection() * .2f);

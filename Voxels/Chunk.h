@@ -2,7 +2,7 @@
 #include "Block.h"
 #include <glm.hpp>
 #include "Renderer.h"
-
+#include "FastNoise.h"
 namespace Voxels {
 	class Chunk {
 	public:
@@ -12,6 +12,7 @@ namespace Voxels {
 		void render();
 		void update();
 		void init();
+		void setPosition(glm::vec3 pos);
 		static const int CHUNK_SIZE;
 	private:
 		void allocBlocks();
@@ -19,5 +20,6 @@ namespace Voxels {
 		glm::vec3 position;
 		Renderer *renderer;
 		Block ***blocks;
+		FastNoise noise;
 	};
 }

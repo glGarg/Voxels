@@ -1,6 +1,6 @@
 #pragma once
 #include "TextureCache.h"
-#include "Texture.h"
+#include "TextureLoader.h"
 
 using std::string;
 

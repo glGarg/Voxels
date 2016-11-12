@@ -8,8 +8,7 @@ using std::string;
 using std::map;
 
 namespace Voxels {
-	class TextureCache
-	{
+	class TextureCache {
 	public:
 		TextureCache();
 		~TextureCache();
