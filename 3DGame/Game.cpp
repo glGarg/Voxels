@@ -5,12 +5,12 @@
 Game::Game(int width, int height) : width(width), height(height),
 									window(width, height, "Test"),
 									programVertex("./assets/Vertex.glsl", GL_VERTEX_SHADER),
-									programFragment("./assets/Fragment.glsl", GL_FRAGMENT_SHADER),
+									programFragment("./assets/AOFragment.glsl", GL_FRAGMENT_SHADER),
 									depthProgramVertex("./assets/depthVertex.glsl", GL_VERTEX_SHADER),
 									depthProgramFragment("./assets/depthFragment.glsl", GL_FRAGMENT_SHADER),
 									camera(glm::vec3(120, 120, 120),
 									glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(120, 120, 120)),
-									glm::radians(25.f), .1, 1000, width, height), framerateController(30), map(4),
+									glm::radians(25.f), .1, 1000, width, height), framerateController(30), map(3),
 									depthTexture(Voxels::TextureLoader::getTextureCount(), width, height, 1, 1),
 									depthFrameBuffer()
 {
@@ -38,10 +38,12 @@ void Game::run() {
 	map.init();
 	camera.init();
 
-	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/Grass.jpg")->texture);
+	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/NM.png")->texture);
 	glUniform1i(program.getUniformLocation("atlas"), Voxels::ResourceManager::getTextureAtlas("./assets/Textures/Atlas.png", 4, 4)->texture);
 	glUniform1i(program.getUniformLocation("depth"), depthTexture.texture);
 	glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
+	glUniformMatrix4fv(program.getUniformLocation("InverseProjection"), 1, GL_FALSE, camera.getInverseProjectionPtr());
+	glUniform3fv(program.getUniformLocation("cameraPos"), 1, camera.getPositionPtr());
 	glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
 
 	depthFrameBuffer.init();
@@ -62,8 +64,7 @@ void Game::run() {
 		framerateController.begin();
 
 		depthProgram.use();
-		//for now using camera's matrix rather than light
-		glUniformMatrix4fv(depthProgram.getUniformLocation("lightVP"), 1, GL_FALSE, camera.getMVPPtr());
+		glUniformMatrix4fv(depthProgram.getUniformLocation("lightVP"), 1, GL_FALSE, light.getVPPtr());
 		glViewport(0, 0, width, height);
 		depthFrameBuffer.bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -79,7 +80,8 @@ void Game::run() {
 		if (camera.getCameraUpdated()) {
 			light.setPosition(camera.getPosition());
 			light.setDirection(camera.getDirection());
-			glUniformMatrix4fv(program.getUniformLocation("lightVP"), 1, GL_FALSE, camera.getMVPPtr());
+			glUniformMatrix4fv(program.getUniformLocation("lightVP"), 1, GL_FALSE, light.getVPPtr());
+			glUniform3fv(program.getUniformLocation("cameraPos"), 1, camera.getPositionPtr());
 			glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
 			glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
 			camera.setCameraUpdated();
@@ -93,6 +95,7 @@ void Game::run() {
 		window.swapBuffers();
 	}
 }
+
 void Game::keyboardInputFunc(GLFWwindow *window, int key, int, int action, int) {
 	Voxels::InputHandler *handler = (Voxels::InputHandler *)glfwGetWindowUserPointer(window);
 	handler->handleButtonInput(key, action);

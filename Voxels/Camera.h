@@ -23,12 +23,14 @@ namespace Voxels {
 		void setPitch(float pitch); 
 
 		glm::vec3 getPosition();
+		GLfloat *getPositionPtr();
 		glm::vec3 getDirection();
 		bool getCameraUpdated();
 		float getYaw();
 		float getPitch();
 		glm::mat4 getMVP();
 		const GLfloat *getMVPPtr();
+		const GLfloat *getInverseProjectionPtr();
 		glm::vec3 getUp();
 		glm::vec3 getRight();
 	protected:

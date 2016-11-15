@@ -3,6 +3,7 @@
 #include <glm.hpp>
 #include "Renderer.h"
 #include "FastNoise.h"
+#include <iostream>
 
 namespace Voxels {
 	class Chunk {
@@ -18,6 +19,7 @@ namespace Voxels {
 	private:
 		void allocBlocks();
 		void createCube(glm::vec3 position, BlockType type = BlockType::DEFAULT_BLOCK);
+		float terrain(float x, float y, float z, float dx, float dy, float dz);
 		glm::vec3 position;
 		Renderer *renderer;
 		Block ***blocks;

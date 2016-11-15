@@ -2,7 +2,7 @@
 
 namespace Voxels {
 	enum class BlockType {
-		DEFAULT_BLOCK = 0,
+		DEFAULT_BLOCK = 3,
 		DIRT_BLOCK = 3,
 		WATER_BLOCK = 9,
 		GRASS_BLOCK = 14

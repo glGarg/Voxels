@@ -39,6 +39,10 @@ namespace Voxels {
 		return position;
 	}
 	
+	GLfloat *Camera::getPositionPtr() {
+		return glm::value_ptr(position);
+	}
+
 	void Camera::setDirection(glm::vec3 dir) {
 		direction = dir;
 		updateView();
@@ -56,6 +60,10 @@ namespace Voxels {
 		return glm::value_ptr(mvp);
 	}
 	
+	const GLfloat *Camera::getInverseProjectionPtr() {
+		return glm::value_ptr(glm::inverse(projection));
+	}
+
 	void Camera::update() {
 		mvp = projection * view * model;
 		cameraUpdated = true;
