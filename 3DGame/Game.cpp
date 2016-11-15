@@ -11,7 +11,7 @@ Game::Game(int width, int height) : width(width), height(height),
 									camera(glm::vec3(120, 120, 120),
 									glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(120, 120, 120)),
 									glm::radians(25.f), .1, 1000, width, height), framerateController(30), map(4),
-									depthTexture(Voxels::TextureLoader::getTextureCount(), width, height),
+									depthTexture(Voxels::TextureLoader::getTextureCount(), width, height, 1, 1),
 									depthFrameBuffer()
 {
 	depthProgram.attach(depthProgramVertex);
@@ -39,7 +39,8 @@ void Game::run() {
 	camera.init();
 
 	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/Grass.jpg")->texture);
-	glUniform1i(program.getUniformLocation("depth"), 0);
+	glUniform1i(program.getUniformLocation("atlas"), Voxels::ResourceManager::getTextureAtlas("./assets/Textures/Atlas.png", 4, 4)->texture);
+	glUniform1i(program.getUniformLocation("depth"), depthTexture.texture);
 	glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
 	glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
 

@@ -1,15 +1,14 @@
-layout(location = 0) in vec3 position;
+layout (location = 0) in vec3 position;
+layout (location = 1) in int type;
 
 uniform mat4 MVP;
 
-flat out vec3 fUv;
 smooth out vec3 fPos;
-out float fZ;
+flat out int fType;
 
 void main(){
 	vec4 pos = MVP * vec4(position, 1.);
-	fUv = position;
 	fPos = position;
-	fZ = pos.w;
+	fType = type;
 	gl_Position = pos;
 }

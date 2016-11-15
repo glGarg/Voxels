@@ -12,7 +12,7 @@ namespace Voxels {
 	public:
 		TextureCache();
 		~TextureCache();
-		Texture *getTexture(string texturePath);
+		Texture *getTexture(string texturePath, int rows, int columns);
 		void updateCache();
 	private:
 		map<string, Texture *> textureMap;

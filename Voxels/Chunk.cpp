@@ -62,8 +62,8 @@ namespace Voxels {
 		position = pos;
 	}
 
-	void Chunk::createCube(glm::vec3 pos) {
-			glm::vec3 vertexData[36] = {
+	void Chunk::createCube(glm::vec3 pos, BlockType type) {
+		glm::vec3 vertexData[36] = {
 			glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),
 			glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f),
 			glm::vec3(1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, -1.0f, -1.0f),
@@ -78,9 +78,14 @@ namespace Voxels {
 			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f)
 		};
 		for (int i = 0; i < sizeof(vertexData) / sizeof(glm::vec3); i+=3) {
+			BlockType cubeType = type;
+			if (type == BlockType::GRASS_BLOCK && false /*top face*/) {
+				cubeType = BlockType::GRASS_BLOCK;
+			}
 			renderer->addTriangle(Block::BLOCK_SIZE*(vertexData[i]) + pos,
 								  Block::BLOCK_SIZE*(vertexData[i + 1]) + pos,
 								  Block::BLOCK_SIZE*(vertexData[i + 2]) + pos);
+			renderer->addType(cubeType);
 		}
 	}
 }

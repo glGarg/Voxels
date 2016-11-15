@@ -18,14 +18,14 @@ namespace Voxels {
 			if (nullptr != it->second) {
 				TextureLoader::freeImage(it->second);
 			}
-			textureMap[it->first] = TextureLoader::loadImage(it->first);
+			textureMap[it->first] = TextureLoader::loadImage(it->first, it->second->rows, it->second->columns);
 		}
 	}
 
-	Texture *TextureCache::getTexture(string texturePath) {
+	Texture *TextureCache::getTexture(string texturePath, int rows, int columns) {
 		map<string, Texture *>::iterator it = textureMap.find(texturePath);
 		if (it == textureMap.end()) {
-			Texture *texture = TextureLoader::loadImage(texturePath);
+			Texture *texture = TextureLoader::loadImage(texturePath, rows, columns);
 			textureMap[texturePath] = texture;
 			return texture;
 		}

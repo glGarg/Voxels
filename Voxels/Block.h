@@ -3,9 +3,9 @@
 namespace Voxels {
 	enum class BlockType {
 		DEFAULT_BLOCK = 0,
-		GRASS_BLOCK,
-		DIRT_BLOCK,
-		WATER_BLOCK
+		DIRT_BLOCK = 3,
+		WATER_BLOCK = 9,
+		GRASS_BLOCK = 14
 	};
 
 	class Block {

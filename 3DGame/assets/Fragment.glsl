@@ -1,10 +1,10 @@
 in vec3 fPos;
-flat in vec3 fUv;
-in float fZ;
+flat in int fType;
 
 uniform vec3 lightPos; //light attached to camera
 uniform mat4 lightPV;
 uniform sampler2D texture;
+uniform sampler2D atlas;
 uniform sampler2D depth;
 
 const float near = 0.1;
@@ -25,13 +25,16 @@ void main(){
 	float diffuse = 0.6 * max(abs(dot(normal, lightDir)), 0.);
 	float specular = pow(max(dot(viewDir, reflectDir), 0.), 32.);
 	
+	vec2 uv = mod(fPos.xz, 1.0)/1.0;
+	uv.x += mod(fType, 4.);
+	uv.y += floor(fType / 4.);
+	uv.x /= 4.;
+	uv.y /= 4.;
+	
 	gl_FragColor = vec4((ambient+diffuse+specular) * vec3(2., 1., 0.), 1.);
 	if(normal.y >= 0.8)
-		gl_FragColor = vec4(texture(texture, vec2(mod(fPos.xz, 16.)/16.)).xyz, 1.);
+		gl_FragColor = vec4(texture(atlas, uv).xyz, 1.);
 	
-	vec3 origin = fPos;
-
-	float z = linearDepth(gl_FragCoord.z)/far;
 	//gl_FragColor = vec4(vec3(sin(texture(depth, gl_FragCoord.xy/500.).x)), 1.);
-	gl_FragColor = vec4(vec3(linearDepth(texture(depth, gl_FragCoord.xy/500.).x)/far), 1.);
+	//gl_FragColor = vec4(vec3(linearDepth(texture(texture, gl_FragCoord.xy/500.).x)/far), 1.);
 }

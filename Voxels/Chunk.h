@@ -3,6 +3,7 @@
 #include <glm.hpp>
 #include "Renderer.h"
 #include "FastNoise.h"
+
 namespace Voxels {
 	class Chunk {
 	public:
@@ -16,7 +17,7 @@ namespace Voxels {
 		static const int CHUNK_SIZE;
 	private:
 		void allocBlocks();
-		void createCube(glm::vec3 position);
+		void createCube(glm::vec3 position, BlockType type = BlockType::DEFAULT_BLOCK);
 		glm::vec3 position;
 		Renderer *renderer;
 		Block ***blocks;
