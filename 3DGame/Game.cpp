@@ -10,7 +10,7 @@ Game::Game(int width, int height) : width(width), height(height),
 									depthProgramFragment("./assets/depthFragment.glsl", GL_FRAGMENT_SHADER),
 									camera(glm::vec3(120, 120, 120),
 									glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(120, 120, 120)),
-									glm::radians(25.f), .1, 1000, width, height), framerateController(30), map(3),
+									glm::radians(25.f), .1, 1000, width, height), framerateController(35), map(3),
 									depthTexture(Voxels::TextureLoader::getTextureCount(), width, height, 1, 1),
 									depthFrameBuffer()
 {
@@ -38,7 +38,7 @@ void Game::run() {
 	map.init();
 	camera.init();
 
-	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/NM.png")->texture);
+	glUniform1i(program.getUniformLocation("texture"), Voxels::ResourceManager::getTexture("./assets/Textures/NormalMap.jpg")->texture);
 	glUniform1i(program.getUniformLocation("atlas"), Voxels::ResourceManager::getTextureAtlas("./assets/Textures/Atlas.png", 4, 4)->texture);
 	glUniform1i(program.getUniformLocation("depth"), depthTexture.texture);
 	glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());

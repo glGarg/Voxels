@@ -8,8 +8,8 @@
 namespace Voxels {
 	class Chunk {
 	public:
-		Chunk();
-		Chunk(glm::vec3 pos);
+		Chunk(bool top);
+		Chunk(bool top, glm::vec3 pos);
 		~Chunk();
 		void render();
 		void update();
@@ -20,6 +20,7 @@ namespace Voxels {
 		void allocBlocks();
 		void createCube(glm::vec3 position, BlockType type = BlockType::DEFAULT_BLOCK);
 		float terrain(float x, float y, float z, float dx, float dy, float dz);
+		const bool top;
 		glm::vec3 position;
 		Renderer *renderer;
 		Block ***blocks;

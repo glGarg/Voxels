@@ -16,7 +16,8 @@ namespace Voxels {
 		for (float i = 0; i < size; ++i) {
 			for (float j = 0; j < size; ++j) {
 				for (float k = 0; k < size; ++k) {
-					chunks[size * size * i + size * j + k] = new Chunk(glm::vec3(i * 16, j * 16, k * 16));
+					bool top = j == (size - 1);
+					chunks[size * size * i + size * j + k] = new Chunk(top, glm::vec3(i * 16, j * 16, k * 16));
 					chunks[size * size * i + size * j + k]->init();
 				}
 			}
