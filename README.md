@@ -14,8 +14,8 @@ Up Key := Move Forward
 Down Key := Move Back
 
 ## Screenshots
-![Screenshot](http://imgur.com/vKbU1nr "VoxelsScreenshot0")  
-![Screenshot](http://imgur.com/8GG7GIm "VoxelsScreenshot1")
+![Screenshot](http://i.imgur.com/vKbU1nr.jpg "VoxelsScreenshot0")  
+![Screenshot](http://i.imgur.com/8GG7GIm.jpg "VoxelsScreenshot1")
 
 ## Demo
-[![VideoDemo](https://i9.ytimg.com/vi/Hn5ZP1zGmSA/3.jpg?sqp=CJTs3sEF&rs=AOn4CLAiwoO7nzSpWRk7IU6MDFlQ3LHX6g&time=1480046239310)](https://www.youtube.com/watch?v=Hn5ZP1zGmSA "Voxels")
+[![VideoDemo](http://i.imgur.com/62xBx1j.jpg)](https://www.youtube.com/watch?v=Hn5ZP1zGmSA "Voxels")
