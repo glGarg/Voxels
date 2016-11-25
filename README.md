@@ -13,9 +13,9 @@ D Key := Move Right
 Up Key := Move Forward  
 Down Key := Move Back
 
+## Demo
+[![VideoDemo](http://i.imgur.com/62xBx1j.jpg)](https://www.youtube.com/watch?v=Hn5ZP1zGmSA "Voxels")
+
 ## Screenshots
 ![Screenshot](http://i.imgur.com/vKbU1nr.jpg "VoxelsScreenshot0")  
 ![Screenshot](http://i.imgur.com/8GG7GIm.jpg "VoxelsScreenshot1")
-
-## Demo
-[![VideoDemo](http://i.imgur.com/62xBx1j.jpg)](https://www.youtube.com/watch?v=Hn5ZP1zGmSA "Voxels")
