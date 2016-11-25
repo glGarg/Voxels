@@ -35,6 +35,33 @@ namespace Voxels {
 		updateView();
 	}
 	
+	void Camera::setDirection(glm::vec3 dir) {
+		direction = dir;
+		updateView();
+	}
+
+	void Camera::setCameraUpdated() {
+		cameraUpdated = false;
+	}
+
+	void Camera::setYaw(float yaw) {
+		this->yaw = yaw;
+		setDirection(glm::normalize(glm::vec3(glm::cos(yaw), 1., glm::sin(yaw))*
+			glm::vec3(glm::cos(pitch), glm::sin(pitch), glm::cos(pitch))));
+	}
+
+	void Camera::setPitch(float pitch) {
+		if (pitch > 89) {
+			pitch = 89;
+		}
+		if (pitch < -89) {
+			pitch = -89;
+		}
+		this->pitch = pitch;
+		setDirection(glm::normalize(glm::vec3(glm::cos(yaw), 1., glm::sin(yaw))*
+			glm::vec3(glm::cos(pitch), glm::sin(pitch), glm::cos(pitch))));
+	}
+
 	glm::vec3 Camera::getPosition() {
 		return position;
 	}
@@ -43,11 +70,6 @@ namespace Voxels {
 		return glm::value_ptr(position);
 	}
 
-	void Camera::setDirection(glm::vec3 dir) {
-		direction = dir;
-		updateView();
-	}
-	
 	glm::vec3 Camera::getDirection() {
 		return glm::normalize(direction);
 	}
@@ -83,10 +105,6 @@ namespace Voxels {
 		return cameraUpdated;
 	}
 
-	void Camera::setCameraUpdated() {
-		cameraUpdated = false;
-	}
-
 	glm::vec3 Camera::getRight() {
 		return glm::normalize(glm::cross(getDirection(), glm::vec3(0., 1., 0.)));
 	}
@@ -99,25 +117,7 @@ namespace Voxels {
 		return yaw;
 	}
 
-	void Camera::setYaw(float yaw) {
-		this->yaw = yaw;
-		setDirection(glm::normalize(glm::vec3(glm::cos(yaw), 1., glm::sin(yaw))*
-			glm::vec3(glm::cos(pitch), glm::sin(pitch), glm::cos(pitch))));
-	}
-
 	float Camera::getPitch() {
 		return pitch;
-	}
-
-	void Camera::setPitch(float pitch) {
-		if (pitch > 89) {
-			pitch = 89;
-		}
-		if (pitch < -89) {
-			pitch = -89;
-		}
-		this->pitch = pitch;
-		setDirection(glm::normalize(glm::vec3(glm::cos(yaw), 1., glm::sin(yaw))*
-			glm::vec3(glm::cos(pitch), glm::sin(pitch), glm::cos(pitch))));
 	}
 }

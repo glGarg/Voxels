@@ -36,35 +36,8 @@ namespace Voxels {
 		for (int i = 0; i > -CHUNK_SIZE; --i) {
 			for (int j = 0; j > -CHUNK_SIZE; --j) {
 				for (int k = 0; k > -CHUNK_SIZE; --k) {
-					/*glm::vec3 df(2.*(((float)-i) / CHUNK_SIZE) - .5,
-								 2.*(((float)-j) / CHUNK_SIZE) - .5,
-								 2.*(((float)-k) / CHUNK_SIZE) - .5);
-					if (terrain(2.*(position.x + i), 3 * (position.y + j), 4 * (position.z + k), df.x, df.y, df.z) > 0.f) {
-						glm::vec3 DF(2.*(((float)-i+1) / CHUNK_SIZE) - .5,
-									 2.*(((float)-j+1) / CHUNK_SIZE) - .5,
-									 2.*(((float)-k+1) / CHUNK_SIZE) - .5);
-						if (j - 1 >= -1 || terrain(2.*(position.x + i), 3 * (position.y + j + 1), 4 * (position.z + k), DF.x, DF.y, DF.z) <= 0.f) {
-							createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k), BlockType::GRASS_BLOCK);
-						}
-						else {
-							createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k));
-						}
-					}*/
-					if (noise.GetSimplex(2.*(position.x + i), 3 * (position.y + j), 4 * (position.z + k)) < 0.1f) {
-						if (j - 1 >= -1 || noise.GetSimplex(2.*(position.x + i), 3 * (position.y + j + 1), 4 * (position.z + k)) >= 0.1f) {
-							if (top && j - 1 >= -2) { //topmost layer
-									createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k), BlockType::SNOW_BLOCK);
-							}
-							else if(j - 1 < -2){
-								createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k), BlockType::GRASS_BLOCK);
-							}
-							else {
-								createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k), BlockType::DEFAULT_BLOCK);
-							}
-						}
-						else {
-							createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k), BlockType::DEFAULT_BLOCK);
-						}
+					if (blocks[-i][-j][-k].isActive()) {
+						createCube(position + CHUNK_SIZE*.5f + glm::vec3(i, j, k), glm::vec3(-i, -j, -k), blocks[-i][-j][-k].getType());
 					}
 				}
 			}
@@ -78,6 +51,19 @@ namespace Voxels {
 			blocks[i] = new Block *[CHUNK_SIZE];
 			for (int j = 0; j < CHUNK_SIZE; ++j) {
 				blocks[i][j] = new Block[CHUNK_SIZE];
+				for (int k = 0; k < CHUNK_SIZE; k++) {
+					if (noise.GetSimplex(2.*(position.x - i), 3 * (position.y - j), 4 * (position.z - k)) < 0.1f) {
+						blocks[i][j][k].setActive(true);
+						if (-j - 1 >= -1 || noise.GetSimplex(2.*(position.x - i), 3 * (position.y - j + 1), 4 * (position.z - k)) >= 0.1f) {
+							if (top && -j - 1 >= -2) { //topmost layer
+								blocks[i][j][k].setType(BlockType::SNOW_BLOCK);
+							}
+							else if (-j - 1 < -2) {
+								blocks[i][j][k].setType(BlockType::GRASS_BLOCK);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -86,23 +72,22 @@ namespace Voxels {
 		position = pos;
 	}
 
-	void Chunk::createCube(glm::vec3 pos, BlockType type) {
+	void Chunk::createCube(glm::vec3 pos, glm::vec3 indices, BlockType type) {
 		glm::vec3 vertexData[36] = {
-			glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),
-			glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f),
-			glm::vec3(1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, -1.0f, -1.0f),
-			glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),
-			glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f),
-			glm::vec3(1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),
-			glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f),
-			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, 1.0f, -1.0f),
-			glm::vec3(1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f),
-			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f),
-			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),
-			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f)
+			glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f), //left
+			glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f), //near
+			glm::vec3(1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, -1.0f, -1.0f), //bottom
+			glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f), //near
+			glm::vec3(-1.0f, -1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f), //left
+			glm::vec3(1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, -1.0f), //bottom
+			glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, -1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f), //far
+			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, 1.0f, -1.0f), //right
+			glm::vec3(1.0f, -1.0f, -1.0f),		glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f), //right
+			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f), //top
+			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, -1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f), //top
+			glm::vec3(1.0f, 1.0f, 1.0f),		glm::vec3(-1.0f, 1.0f, 1.0f),		glm::vec3(1.0f, -1.0f, 1.0f) //far
 		};
 		for (int i = 0; i < sizeof(vertexData) / sizeof(glm::vec3); i+=3) {
-			//(i == 27 || i == 30) top face
 			BlockType cubeType = BlockType::DEFAULT_BLOCK;
 			if (type != BlockType::DEFAULT_BLOCK) {
 					cubeType = type;
@@ -111,7 +96,45 @@ namespace Voxels {
 								  Block::BLOCK_SIZE*(vertexData[i + 1]) + pos,
 								  Block::BLOCK_SIZE*(vertexData[i + 2]) + pos);
 			renderer->addType(cubeType);
+			renderer->addAO(calcAO(vertexData[i] + 1.f, indices));
+			renderer->addAO(calcAO(vertexData[i + 1] + 1.f, indices));
+			renderer->addAO(calcAO(vertexData[i + 2] + 1.f, indices));
 		}
+	}
+
+	float Chunk::calcAO(glm::vec3 vertex, glm::vec3 indices) {
+		if ((((vertex.x == 2) && indices.x == 0) ||
+			 ((vertex.y == 2) && indices.y == 0) ||
+			 ((vertex.z == 2) && indices.z == 0)) ||
+		(((vertex.x == 0) && indices.x == CHUNK_SIZE - 1) ||
+		 ((vertex.y == 0) && indices.y == CHUNK_SIZE - 1) ||
+		 ((vertex.z == 0) && indices.z == CHUNK_SIZE - 1))) {
+			return 1.;
+		}
+		float AO = 1.;
+		int y = vertex.y == 0 ? indices.y + 1 : indices.y - 1;
+		int x1 = indices.x;
+		int z1 = vertex.z == 0 ? indices.z + 1 : indices.z - 1;
+		int x2 = vertex.x == 0 ? indices.x + 1 : indices.x - 1;
+		int z2 = indices.z;
+		int x3 = vertex.x == 0 ? indices.x + 1 : indices.x - 1;
+		int z3 = vertex.z == 0 ? indices.z + 1 : indices.z - 1;
+		if (blocks[x1][y][z1].isActive() && blocks[x2][y][z2].isActive()) {
+			AO = 0.75;
+		}
+		else if ((blocks[x1][y][z1].isActive() && blocks[x3][y][z3].isActive()) ||
+				 (blocks[x2][y][z2].isActive() && blocks[x3][y][z3].isActive())) {
+			AO = 0.85;
+		}
+		else if (blocks[x1][y][z1].isActive() ||
+				 blocks[x2][y][z2].isActive() ||
+				 blocks[x3][y][z3].isActive()) {
+			AO = 0.93;
+		}
+		else {
+			AO = 1.;
+		}
+		return AO;
 	}
 
 	//implement a more interesting noise

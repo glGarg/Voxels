@@ -10,7 +10,7 @@ Game::Game(int width, int height) : width(width), height(height),
 									depthProgramFragment("./assets/depthFragment.glsl", GL_FRAGMENT_SHADER),
 									camera(glm::vec3(120, 120, 120),
 									glm::normalize(glm::vec3(0, 0, 0) - glm::vec3(120, 120, 120)),
-									glm::radians(25.f), .1, 1000, width, height), framerateController(35), map(3),
+									glm::radians(25.f), .1, 1000, width, height), framerateController(30), map(3),
 									depthTexture(Voxels::TextureLoader::getTextureCount(), width, height, 1, 1),
 									depthFrameBuffer()
 {
@@ -84,6 +84,7 @@ void Game::run() {
 			glUniform3fv(program.getUniformLocation("cameraPos"), 1, camera.getPositionPtr());
 			glUniform3fv(program.getUniformLocation("lightPos"), 1, light.getPositionPtr());
 			glUniformMatrix4fv(program.getUniformLocation("MVP"), 1, GL_FALSE, camera.getMVPPtr());
+			glUniformMatrix4fv(program.getUniformLocation("InverseProjection"), 1, GL_FALSE, camera.getInverseProjectionPtr());
 			camera.setCameraUpdated();
 		}
 		depthTexture.bind();
@@ -130,9 +131,9 @@ void Game::processInput() {
 		camera.setPosition(camera.getPosition() - camera.getUp() *.2f);
 	}
 	if (inputHandler.isPressed(GLFW_KEY_UP)) {
-		camera.setPosition(camera.getPosition() + camera.getDirection() * .2f);
+		camera.setPosition(camera.getPosition() + camera.getDirection() * .25f);
 	}
 	if (inputHandler.isPressed(GLFW_KEY_DOWN)) {
-		camera.setPosition(camera.getPosition() - camera.getDirection() * .2f);
+		camera.setPosition(camera.getPosition() - camera.getDirection() * .25f);
 	}
 }

@@ -18,7 +18,8 @@ namespace Voxels {
 		static const int CHUNK_SIZE;
 	private:
 		void allocBlocks();
-		void createCube(glm::vec3 position, BlockType type = BlockType::DEFAULT_BLOCK);
+		void createCube(glm::vec3 position, glm::vec3 indices, BlockType type = BlockType::DEFAULT_BLOCK);
+		float calcAO(glm::vec3 vertex, glm::vec3 indices);
 		float terrain(float x, float y, float z, float dx, float dy, float dz);
 		const bool top;
 		glm::vec3 position;

@@ -3,7 +3,7 @@
 namespace Voxels {
 	float Block::BLOCK_SIZE = 0.5;
 
-	Block::Block(BlockType type) : active(true), type(type) {}
+	Block::Block(BlockType type) : active(false), type(type) {}
 
 	Block::~Block() {}
 
@@ -13,5 +13,13 @@ namespace Voxels {
 
 	bool Block::isActive() {
 		return active;
+	}
+
+	void Block::setType(BlockType type) {
+		this->type = type;
+	}
+
+	BlockType Block::getType() {
+		return type;
 	}
 }

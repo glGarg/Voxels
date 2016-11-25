@@ -33,7 +33,7 @@ namespace Voxels {
 	}
 	void Shader::compile() {
 		glCompileShader(shader);
-#ifdef DEBUG_GLSL
+#if DEBUG_GLSL
 		GLint length = 0;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
 		vector<GLchar> errorLog(length);

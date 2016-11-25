@@ -17,8 +17,7 @@ namespace Voxels {
 
 	static void mouseInputFunc(GLFWwindow *window, int key, int action, int) {}
 
-	Window::Window(int width, int height, string windowName) : width(width), height(height), window(nullptr), keyboardFunc(keyboardInputFunc), mouseFunc(mouseInputFunc), resizeFunc(resizeFunc)
-	{
+	Window::Window(int width, int height, string windowName) : width(width), height(height), window(nullptr), keyboardFunc(keyboardInputFunc), mouseFunc(mouseInputFunc), resizeFunc(resizeFunc) {
 		if (glfwInit()) {
 			window = glfwCreateWindow(width, height, windowName.c_str(), NULL, NULL);
 			glfwMakeContextCurrent(window);
@@ -36,8 +35,7 @@ namespace Voxels {
 		}
 	}
 
-	Window::~Window()
-	{
+	Window::~Window() {
 		glfwDestroyWindow(window);
 	}
 

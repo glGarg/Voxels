@@ -8,11 +8,10 @@ using std::string;
 
 namespace Voxels {
 	enum WindowState {
-		//Create various window states for window
+		//Add window states for window
 	};
 
-	class Window
-	{
+	class Window {
 	public:
 		Window(int width, int height, string windowName);
 		~Window();

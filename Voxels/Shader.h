@@ -12,11 +12,10 @@ using std::string;
 using std::ifstream;
 using std::vector;
 
-//#define DEBUG_GLSL
+#define DEBUG_GLSL 0
 
 namespace Voxels {
-	class Shader
-	{
+	class Shader {
 	public:
 		Shader();
 		Shader(string filePath, GLenum shaderKind);

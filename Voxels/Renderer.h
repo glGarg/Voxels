@@ -7,13 +7,13 @@
 using std::vector;
 
 namespace Voxels {
-	class Renderer
-	{
+	class Renderer {
 	public:
 		Renderer();
 		~Renderer();
 		void addTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
 		void addType(BlockType type);
+		void addAO(float AO);
 		void init();
 		void clear();
 		void update();
@@ -21,7 +21,8 @@ namespace Voxels {
 	private:
 		vector<glm::vec3> vertices;
 		vector<BlockType> types;
+		vector<float> AOvals;
 		GLuint vao;
-		GLuint vbo[2];
+		GLuint vbo[3];
 	};
 }

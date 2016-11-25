@@ -4,8 +4,7 @@
 #include "Shader.h"
 
 namespace Voxels {
-	class Program
-	{
+	class Program {
 	public:
 		Program();
 		~Program();
@@ -18,5 +17,4 @@ namespace Voxels {
 	private:
 		GLuint program;
 	};
-
 }

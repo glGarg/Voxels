@@ -12,8 +12,8 @@ namespace Voxels {
 	class Camera {
 	public:
 		Camera();
-		Camera(glm::vec3 pos, glm::vec3 dir, float fov, float near, float far, float width, float height); //takes target
-		Camera(glm::vec3 pos, float pitch, float yaw, float fov, float near, float far, float width, float height); //takes pitch and yaw
+		Camera(glm::vec3 pos, glm::vec3 dir, float fov, float near, float far, float width, float height); //target
+		Camera(glm::vec3 pos, float pitch, float yaw, float fov, float near, float far, float width, float height); //pitch and yaw
 		~Camera();
 		void init();
 		void setPosition(glm::vec3 pos);
@@ -26,13 +26,13 @@ namespace Voxels {
 		GLfloat *getPositionPtr();
 		glm::vec3 getDirection();
 		bool getCameraUpdated();
-		float getYaw();
-		float getPitch();
 		glm::mat4 getMVP();
 		const GLfloat *getMVPPtr();
 		const GLfloat *getInverseProjectionPtr();
 		glm::vec3 getUp();
 		glm::vec3 getRight();
+		float getYaw();
+		float getPitch();
 	protected:
 		void update();
 		void updateView();

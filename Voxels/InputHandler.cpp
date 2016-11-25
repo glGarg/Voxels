@@ -1,8 +1,7 @@
 #include "InputHandler.h"
 
 namespace Voxels {
-	InputHandler::InputHandler() : x(0), y(0), lastx(250), lasty(250), dx(0), dy(0)
-	{}
+	InputHandler::InputHandler() : x(0), y(0), lastx(250), lasty(250), dx(0), dy(0) {}
 
 	InputHandler::~InputHandler() {}
 

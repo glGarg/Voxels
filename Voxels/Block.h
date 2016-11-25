@@ -15,6 +15,8 @@ namespace Voxels {
 		~Block();
 		void setActive(bool active);
 		bool isActive();
+		void setType(BlockType type);
+		BlockType getType();
 		static float BLOCK_SIZE;
 	private:
 		bool active;
