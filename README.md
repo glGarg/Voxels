@@ -6,7 +6,6 @@ Edit the sample Game.cpp file to add shaders, programs, textures, etc. and creat
 Use mouse and keyboard to navigate.
 
 ## Screenshots
-![Screenshot](http://i.imgur.com/vKbU1nr.jpg "VoxelsScreenshot0")
 <img src="http://i.imgur.com/vKbU1nr.jpg" alt="VoxelsScreenshot0" width="75%"/>
 
 Watch this [video](https://www.youtube.com/watch?v=Hn5ZP1zGmSA) to see it in action! 😄
